@@ -1,48 +1,73 @@
-const apiKey = "198cd181fab995f05b0d705991165dba";
-const apiUrl =
-  "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+// OpenWeatherMap API key and base URL
+const API_KEY = '198cd181fab995f05b0d705991165dba';
+const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 
-const searchBox = document.querySelector(".search input");
-const searchBtn = document.querySelector(".search button");
-const weatherIcon = document.querySelector(".weather-icon");
+// DOM elements
+const searchInput = document.querySelector('.search input');
+const searchButton = document.querySelector('.search button');
+const errorDiv = document.querySelector('.error');
+const weatherIcon = document.querySelector('.weather-icon');
+const tempElement = document.querySelector('.temp');
+const cityElement = document.querySelector('.city');
+const humidityElement = document.querySelector('.humidity');
+const windElement = document.querySelector('.wind');
 
-async function checkWeather(city) {
-  const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
-
-  if (response.status == 404) {
-    document.querySelector(".error").style.display = "block";
-    document.querySelector(".weather-info").style.display = "none";
-    return;
-  } else {
-    var data = await response.json();
-  }
-
-  console.log(data);
-
-  document.querySelector(".city").innerHTML = data.name;
-  document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
-  document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
-  document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
-
-  if (data.weather[0].main == "Clouds") {
-    weatherIcon.src = "images/clouds.png";
-  } else if (data.weather[0].main == "Clear") {
-    weatherIcon.src = "images/clear.png";
-  } else if (data.weather[0].main == "Rain") {
-    weatherIcon.src = "images/rain.png";
-  } else if (data.weather[0].main == "Drizzle") {
-    weatherIcon.src = "images/drizzle.png";
-  } else if (data.weather[0].main == "Mist") {
-    weatherIcon.src = "images/mist.png";
-  } else if (data.weather[0].main == "Snow") {
-    weatherIcon.src = "images/snow.png";
-  } else {
-    weatherIcon.src = "images/unknown.png";
-  }
-
-  document.querySelector(".weather-info").style.display = "block";
-  document.querySelector(".error").style.display = "none";
+// Function to fetch weather data
+async function fetchWeather(city) {
+    try {
+        const response = await fetch(`${BASE_URL}?q=${city}&appid=${API_KEY}&units=metric`);
+        if (!response.ok) {
+            throw new Error('City not found');
+        }
+        const data = await response.json();
+        console.log(data);
+        updateDOM(data);
+        errorDiv.style.display = 'none';
+        localStorage.setItem('lastCity', city); // Save city to localStorage
+    } catch (error) {
+        errorDiv.style.display = 'block';
+    }
 }
-searchBtn.addEventListener("click", () => {
-  checkWeather(searchBox.value);
+
+// Function to update the DOM with weather data
+function updateDOM(data) {
+    const { name, main, weather, wind } = data;
+    const isDay = weather[0].icon.includes('d'); // Check if it's day or night
+
+    cityElement.textContent = name;
+    tempElement.textContent = `${Math.round(main.temp)}°C`;
+    humidityElement.textContent = `${main.humidity}%`;
+    windElement.textContent = `${wind.speed} km/h`;
+
+    // Update weather icon and background
+    weatherIcon.src = `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
+    document.body.style.backgroundImage = isDay
+        ? "url('images/day.jpg')" 
+        : "url('images/night.jpg')"; 
+}
+
+// Event listener for search button
+searchButton.addEventListener('click', () => {
+    const city = searchInput.value.trim();
+    if (city) {
+        fetchWeather(city);
+    }
+});
+
+// Event listener for pressing Enter
+searchInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        const city = searchInput.value.trim();
+        if (city) {
+            fetchWeather(city);
+        }
+    }
+});
+
+// Load last searched city from localStorage on page load
+window.addEventListener('load', () => {
+    const lastCity = localStorage.getItem('lastCity');
+    if (lastCity) {
+        fetchWeather(lastCity);
+    }
 });
