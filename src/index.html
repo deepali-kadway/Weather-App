@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js" defer></script>
+</head>
+<body>
+    <div class="weather-app">
+        <div class="search">
+            <input type="text" placeholder="Enter city name" spellcheck="false">
+            <!-- D:\VSCode-Workspace\Projects\Weather App\Weather-App\lib\images\search.png -->
+            <button><img src="\lib\images\search.png" alt="Search"></button>
+        </div>
+        <div class="error" style="display: none;">
+            <p>Invalid City Name</p>
+        </div>
+
+        <div class="weather-info">
+            <img src="\lib\images\weather.png" class="weather-icon" alt="Weather Icon">
+            <h1 class="temp">--°C</h1>
+            <h2 class="city">City Name</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="\lib\images\humidity.png" alt="Humidity Icon">
+                    <div>
+                        <p class="humidity">--%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <img src="\lib\images\wind.png" alt="Wind Icon">
+                    <div>
+                        <p class="wind">-- km/h</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
