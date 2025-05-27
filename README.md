@@ -16,6 +16,5 @@ A weather application to get the temperature, weather condition and whether it i
 
 - [x] By closing the browser window the city name will be stored in localStorage and when the user returns, the name will be retrieved to make an api call to update the `DOM`.
 
-## View Weather App
-- [Javascript Weather App](https://deepali-kadway.github.io/Weather-App/)
+
 
